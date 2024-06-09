@@ -2,7 +2,7 @@ using AuctionTypesCMS.Components;
 using AuctionTypesCMS.Repositories;
 using AuctionTypesCMS.Services;
 using Microsoft.EntityFrameworkCore;
-
+using MudBlazor.Services;
 namespace AuctionTypesCMS
 {
     public class Program
@@ -20,6 +20,7 @@ namespace AuctionTypesCMS
 
             builder.Services.AddScoped<IAuctionTypesRepository, AuctionTypesRepository>();
             builder.Services.AddScoped<IAuctionTypesServices, AuctionTypesService>();
+            builder.Services.AddMudServices();
 
             var app = builder.Build();
 
