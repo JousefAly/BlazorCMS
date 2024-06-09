@@ -13,7 +13,7 @@ namespace AuctionTypesCMS.Entities
         public string Key { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string FileName { get; set; }
+        public string? FileName { get; set; }
 
         public string GetImageLink() => $"images/{FileName}";
     }

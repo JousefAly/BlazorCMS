@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
 
+
 namespace AuctionTypesCMS.Components.Pages
 {
     public partial class AuctionTypes
@@ -11,10 +12,15 @@ namespace AuctionTypesCMS.Components.Pages
         private AuctionType auctionType = new AuctionType();
         private List<AuctionType> auctionTypes = new List<AuctionType>();
         IList<IBrowserFile> files = new List<IBrowserFile>();
+        private MudTable<AuctionType> _table;
 
         protected override async Task OnInitializedAsync()
         {
             GetAuctionTypes();
+        }
+        private void PageChanged(int i)
+        {
+            _table.NavigateTo(i - 1);
         }
 
         private List<AuctionType> GetAuctionTypes()

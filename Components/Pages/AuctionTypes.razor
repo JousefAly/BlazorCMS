@@ -45,7 +45,11 @@
 
 
 @* Grid *@
-<MudTable Elevation="25" Items="GetAuctionTypes()" Filter="new Func<AuctionType, bool>(Search)" @bind-auctionType="auctionType">
+<MudTable Elevation="25" @ref="@_table"
+    Items="GetAuctionTypes()" 
+    RowsPerPage="3"
+    Filter="new Func<AuctionType, bool>(Search)" 
+        @bind-auctionType="auctionType">
     <ToolBarContent>
         <MudText Typo="Typo.h6">Auction Types</MudText>
         <MudSpacer />
@@ -69,5 +73,9 @@
             <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
         </MudTd>
     </RowTemplate>
+    <PagerContent>
+        <MudPagination SelectedChanged="PageChanged" 
+            Count="@((_table.GetFilteredItemsCount() + _table.RowsPerPage - 1) / _table.RowsPerPage)" Class="pa-4" />
+    </PagerContent>
 </MudTable>
 
