@@ -13,7 +13,7 @@ namespace AuctionTypesCMS
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();
+                .AddInteractiveServerComponents();            
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<CMSContext>(options => options.UseSqlServer(connectionString));
