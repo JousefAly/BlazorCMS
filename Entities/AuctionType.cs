@@ -10,8 +10,11 @@ namespace AuctionTypesCMS.Entities
         [StringLength(100)]
         public string NameAr { get; set; }
         [StringLength(100)]
-        public string Key{ get; set; }
+        public string Key { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string FileName { get; set; }
+
+        public string GetImageLink() => $"images/{FileName}";
     }
 }

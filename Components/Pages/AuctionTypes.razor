@@ -1,70 +1,73 @@
-﻿@page "/auctionType"
+﻿@page "/auctionTypes"
 @rendermode InteractiveServer
-@inject IAuctionTypesServices auctionTypesService
-@inject NavigationManager navigationManager
 
+<h3>Auction Types </h3>
 
-<h3>Auction Types</h3>
+@* input *@
+<MudCard Elevation="25">
+    <MudCardHeader>
+        <CardHeaderContent>
+            <MudText Typo="Typo.h6">Add / Edit Auction Types</MudText>
+        </CardHeaderContent>
+    </MudCardHeader>
+    <MudCardContent>
+        <MudTextField @bind-Value="auctionType.NameEn" Label="NameEn" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudTextField @bind-Value="auctionType.NameAr" Label="NameAr" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudTextField @bind-Value="auctionType.Key" Label="Key" Variant="Variant.Text" Margin="Margin.Normal"></MudTextField>
+        <MudCheckBox @bind-Value="auctionType.IsActive" Label="Active"></MudCheckBox>
+        <br />
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="Save">Save Auction Type</MudButton>
+    </MudCardContent>
+</MudCard>
+<br />
 
-<ul>
-    @foreach (var auctionType in auctionTypes)
-    {
-        <div class="m-2">
-        <li>
-                @auctionType.NameEn
-            <button @onclick="() => Delete(auctionType.Id)" class="btn btn-danger">
-                Delete
-            </button>
-
-        </li>
-        </div>
-    }
-</ul>
-<label name="newNameEn">NameEn</label>
-<input @bind="newNameEn" />
-<label name="newNameAr">NameAr</label>
-<input @bind="newNameAr" />
-<label name="newkey">Key</label>
-<input @bind="newKey" />
-<button @onclick="AddAuctionType">Add Auction Type</button>
-
-@code {
-    private List<AuctionType> auctionTypes = new();
-
-    protected override void OnInitialized()
-    {
-        auctionTypes = auctionTypesService.GetAll();
-    }
-
-
-
-    private string newNameEn = "";
-    private string newNameAr = "";
-    private string newKey = "";
-    public bool IsActive { get; set; }
-
-    private void AddAuctionType()
-    {
-        if (!string.IsNullOrWhiteSpace(newNameEn))
-        {
-            auctionTypesService.Add(
-                  new AuctionType
-                      {
-                          NameEn = newNameEn,
-                          NameAr = newNameAr,
-                          Key = newKey
-                      });
-        }
-
-        var auctionTypes = auctionTypesService.GetAll();
-        navigationManager.Refresh(true);
-    }
-
-    private void Delete(int id)
-    {
-        auctionTypesService.Delete(id);
-        navigationManager.Refresh(true);
-    }
-
+@if (!string.IsNullOrWhiteSpace(auctionType.FileName))
+{
+    <MudImage Src="@(auctionType.GetImageLink())" Width="100" Height="100" Elevation="25" Class="rounded-lg" />
 
 }
+
+@* Upload Image *@
+
+<MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+    <ButtonTemplate>
+        <MudFab HtmlTag="label"
+                Color="Color.Secondary"
+                Icon="@Icons.Material.Filled.Image"
+                Label="Load picture"
+                for="@context.Id" />
+    </ButtonTemplate>
+</MudFileUpload>
+
+
+
+<br />
+
+
+@* Grid *@
+<MudTable Elevation="25" Items="GetAuctionTypes()" Filter="new Func<AuctionType, bool>(Search)" @bind-auctionType="auctionType">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Auction Types</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search for Auction Types..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name En</MudTh>
+        <MudTh>Name Ar</MudTh>
+        <MudTh>Key</MudTh>
+        <MudTh>Active</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="NameEn">@context.NameEn</MudTd>
+        <MudTd DataLabel="NameAr">@context.NameAr</MudTd>
+        <MudTd DataLabel="Key">@context.Key</MudTd>
+        <MudTd DataLabel="Active">@context.IsActive</MudTd>
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(()=>Edit(@context.Id))" Color="Color.Primary" Icon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" Icon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+

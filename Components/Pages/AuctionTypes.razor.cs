@@ -1,14 +1,16 @@
 ﻿using AuctionTypesCMS.Entities;
+using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
 
 namespace AuctionTypesCMS.Components.Pages
 {
-    public partial class AuctionTypesMud
+    public partial class AuctionTypes
     {
         private string searchString = "";
         private AuctionType auctionType = new AuctionType();
         private List<AuctionType> auctionTypes = new List<AuctionType>();
+        IList<IBrowserFile> files = new List<IBrowserFile>();
 
         protected override async Task OnInitializedAsync()
         {
@@ -61,5 +63,27 @@ namespace AuctionTypesCMS.Components.Pages
 
             return false;
         };
+
+        private async Task UploadFiles(IBrowserFile file)
+        {
+
+            var fileName = Path.GetFileName(file.Name);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images", fileName);
+
+            SaveFileNameToDB(fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.OpenReadStream().CopyToAsync(fileStream);
+            }
+        }
+
+        private void SaveFileNameToDB(string fileName)
+        {
+            auctionType.FileName = fileName;
+            auctionTypesService.Update(auctionType);
+        }
+
+        
     }
 }
