@@ -3,12 +3,12 @@ using Microsoft.Extensions.Caching.Memory;
 
 namespace AuctionTypesCMS.Repositories
 {
-    public class CachedAuctionTypesRepository : IAuctionTypesRepository
+    public class CachedAuctionTypesRepository : ICachedAuctionTypesRepository, IAuctionTypesRepository
     {
-        private readonly AuctionTypesRepository _decorated;
+        private readonly IAuctionTypesRepository _decorated;
         private readonly IMemoryCache _memoryCache;
 
-        public CachedAuctionTypesRepository(AuctionTypesRepository decorated, IMemoryCache memoryCache)
+        public CachedAuctionTypesRepository(IAuctionTypesRepository decorated, IMemoryCache memoryCache)
         {
             _decorated = decorated;
             _memoryCache = memoryCache;
@@ -19,16 +19,25 @@ namespace AuctionTypesCMS.Repositories
         {
             _decorated.Add(auctionType);
         }
-       
-        public Task<AuctionType> GetById(int id, CancellationToken cancellationToken)
-        {
 
-            return _decorated.GetById(id, cancellationToken);
+        public async Task<AuctionType> GetById(int id, CancellationToken cancellationToken)
+        {
+            string key = $"AuctionType-{id}";
+
+            var data = await _memoryCache.GetOrCreate(key,
+                entry =>
+                {
+                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
+
+                    return _decorated.GetById(id, cancellationToken);
+                })!;
+
+            return data;
         }
 
         public void Update(AuctionType auctionType)
         {
-             _decorated.Update(auctionType);
+            _decorated.Update(auctionType);
         }
         public void Delete(int auctionTypeId)
         {

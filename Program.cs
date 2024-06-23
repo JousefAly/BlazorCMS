@@ -13,13 +13,19 @@ namespace AuctionTypesCMS
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();            
+                .AddInteractiveServerComponents();
+
+            builder.Services.AddControllers();
 
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<CMSContext>(options => options.UseSqlServer(connectionString));
 
+
+            builder.Services.AddMemoryCache();
+
             builder.Services.AddScoped<IAuctionTypesRepository, AuctionTypesRepository>();
             builder.Services.AddScoped<IAuctionTypesServices, AuctionTypesService>();
+            builder.Services.AddScoped<ICachedAuctionTypesRepository, CachedAuctionTypesRepository>();
             builder.Services.AddMudServices();
 
             var app = builder.Build();
@@ -39,6 +45,8 @@ namespace AuctionTypesCMS
 
             app.MapRazorComponents<App>()
                 .AddInteractiveServerRenderMode();
+
+            app.MapControllers();
 
             app.Run();
         }
