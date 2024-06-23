@@ -10,7 +10,7 @@ namespace AuctionTypesCMS.Services
         public AuctionTypesService(IAuctionTypesRepository auctionTypesRepository)
         {
             _auctionTypesRepository = auctionTypesRepository;
-        }
+        }       
         public void Add(AuctionType auctionType)
         {
             auctionType.CreatedDate = DateTime.UtcNow;

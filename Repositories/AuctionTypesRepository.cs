@@ -27,6 +27,11 @@ namespace AuctionTypesCMS.Repositories
             return _context.AuctionTypes.ToList();
         }
 
+        public async Task<AuctionType> GetById(int id, CancellationToken cancellationToken = default)
+        {
+            return await _context.AuctionTypes.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+        }
+
         public void Update(AuctionType auctionType)
         {
             _context.Update(auctionType);
