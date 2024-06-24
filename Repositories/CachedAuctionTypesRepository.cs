@@ -1,4 +1,5 @@
 ﻿using AuctionTypesCMS.Entities;
+using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace AuctionTypesCMS.Repositories
@@ -7,11 +8,15 @@ namespace AuctionTypesCMS.Repositories
     {
         private readonly IAuctionTypesRepository _decorated;
         private readonly IMemoryCache _memoryCache;
+        private readonly IMapper _mapper;
 
-        public CachedAuctionTypesRepository(IAuctionTypesRepository decorated, IMemoryCache memoryCache)
+        public CachedAuctionTypesRepository(IAuctionTypesRepository decorated,
+            IMemoryCache memoryCache,
+            IMapper mapper)
         {
             _decorated = decorated;
             _memoryCache = memoryCache;
+            _mapper = mapper;
         }
 
 
@@ -22,17 +27,20 @@ namespace AuctionTypesCMS.Repositories
 
         public async Task<AuctionType> GetById(int id, CancellationToken cancellationToken)
         {
-            string key = $"AuctionType-{id}";
+          
+            try
+            {
+                var person = new PersonDTO($"{id}");
+                var personMapped = _mapper.Map<Person>(person);
+                var personAgain = _mapper.Map<PersonDTO>(personMapped);
+            }
+            catch (Exception ex)
+            {
 
-            var data = await _memoryCache.GetOrCreate(key,
-                entry =>
-                {
-                    entry.SetAbsoluteExpiration(TimeSpan.FromMinutes(2));
+                throw;
+            }
 
-                    return _decorated.GetById(id, cancellationToken);
-                })!;
-
-            return data;
+           return new AuctionType { Id = id };
         }
 
         public void Update(AuctionType auctionType)

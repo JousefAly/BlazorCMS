@@ -27,6 +27,7 @@ namespace AuctionTypesCMS
             builder.Services.AddScoped<IAuctionTypesServices, AuctionTypesService>();
             builder.Services.AddScoped<ICachedAuctionTypesRepository, CachedAuctionTypesRepository>();
             builder.Services.AddMudServices();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             var app = builder.Build();
 
