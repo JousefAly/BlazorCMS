@@ -1,9 +1,11 @@
 ﻿using AuctionTypesCMS.Entities;
 using AutoMapper;
 using Microsoft.Extensions.Caching.Memory;
+using System.ComponentModel.DataAnnotations;
 
 namespace AuctionTypesCMS.Repositories
 {
+   
     public class CachedAuctionTypesRepository : ICachedAuctionTypesRepository, IAuctionTypesRepository
     {
         private readonly IAuctionTypesRepository _decorated;
@@ -29,7 +31,8 @@ namespace AuctionTypesCMS.Repositories
         {
           
             try
-            {
+            {               
+
                 var person = new PersonDTO($"{id}");
                 var personMapped = _mapper.Map<Person>(person);
                 var personAgain = _mapper.Map<PersonDTO>(personMapped);

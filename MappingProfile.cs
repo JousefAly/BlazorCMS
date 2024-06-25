@@ -7,8 +7,11 @@
     {
         public MappingProfile()
         {
-            CreateMap<Person, PersonDTO>().ReverseMap();
+            CreateMap<Person, PersonDTO>().IgnoreAllPropertiesWithAnInaccessibleSetter().ReverseMap()
+                ;
             
+
+
         }
     }
 
