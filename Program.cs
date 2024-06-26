@@ -20,6 +20,13 @@ namespace AuctionTypesCMS
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
             builder.Services.AddDbContext<CMSContext>(options => options.UseSqlServer(connectionString));
 
+            builder.Services.AddStackExchangeRedisCache(options =>
+            {
+                var connectionString = builder.Configuration.GetConnectionString("Redis");
+
+                options.Configuration = connectionString;
+            });
+
 
             builder.Services.AddMemoryCache();
 
